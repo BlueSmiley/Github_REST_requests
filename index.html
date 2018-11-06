@@ -1,0 +1,22 @@
+<html>
+  <!-- Use the Source, Luke -->
+  <script src='https://d3js.org/d3.v4.min.js'></script>
+  <head>
+    <title>d3 visualisation</title>
+    </head>
+        <body>
+            <svg id="visual" width="100%" height="auto"></svg>
+            <script>
+                d3.select("#visual")
+                    .selectAll("circle")
+                    .data([30,30,30])
+                    .enter()
+                    .append("circle")
+                    .attr("cx", function(d,i) {return d + (i*60);})
+                    .attr("r",function(){return 30;})
+                    .attr("cy",function(){return 50;});
+            </script>
+        </body>
+    </head>
+</html>
+        
