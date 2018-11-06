@@ -1,46 +1,51 @@
 <html>
-  <!-- Use the Source, Luke -->
   <script src='https://d3js.org/d3.v4.min.js'></script>
   <head>
     <title>d3 visualisation</title>
     </head>
         <body>
-            <svg id="visual" width="100%" height="auto"></svg>
+            <svg id="visual" width="100%" height="100%"></svg>
             <script>
                 var sampleData = [{
-                    "x": 1,
-                    "y": 5
+                    "add": 100,
+                    "del": 5
                     }, {
-                    "x": 20,
-                    "y": 20
+                    "add": 20,
+                    "del": 20
                     }, {
-                    "x": 40,
-                    "y": 10
+                    "add": 40,
+                    "del": 10
                     }, {
-                    "x": 60,
-                    "y": 40
+                    "add": 60,
+                    "del": 40
                     }, {
-                    "x": 80,
-                    "y": 5
+                    "add": 80,
+                    "del": 5
                     }, {
-                    "x": 100,
-                    "y": 60
+                    "add": 100,
+                    "del": 60
                     }];
               
-                var scaleX = d3.scaleLinear()
-                  .domain([d3.min(sampleData, function(d) { return d.x; }), 
-                           d3.max(sampleData, function(d) { return d.x; })])
-                  .range([10,300]);
+                var scaleSize = d3.scaleLinear()
+                  .domain([d3.min(sampleData, function(d) { return d.add; }), 
+                           d3.max(sampleData, function(d) { return d.add; })])
+                  .range([10,40]);
+              
+                var color = d3.scaleLinear()
+                  .domain([
+                    d3.min(sampleData, function(d) { return (d.add/d.del);}),
+                    d3.max(sampleData, function(d) { return (d.add/d.del);})])
+                  .range(["yellow","blue"]);
     
                 d3.select("#visual")
                     .selectAll("circle")
                     .data(sampleData)
                     .enter()
                     .append("circle")
-                    .attr("cx", function(d,i) {return scaleX(d.x) + (i+1)*20;})
-                    .attr("r",function(){return 10;})
-                    .attr("cy",function(d,i){return d.y + (i+1)*20;})
-                    .style("fill", "red");
+                    .attr("cx", function(d,i) {return (i+1)*50;})
+                    .attr("r",function(d){return scaleSize(d.add);})
+                    .attr("cy",function(d,i){return (i+1)*50;})
+                    .style("fill", function(d){return color(d.add/d.del);});
             </script>
         </body>
     </head>
