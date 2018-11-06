@@ -7,16 +7,41 @@
         <body>
             <svg id="visual" width="100%" height="auto"></svg>
             <script>
+                var sampleData = [{
+                    "x": 1,
+                    "y": 5
+                    }, {
+                    "x": 20,
+                    "y": 20
+                    }, {
+                    "x": 40,
+                    "y": 10
+                    }, {
+                    "x": 60,
+                    "y": 40
+                    }, {
+                    "x": 80,
+                    "y": 5
+                    }, {
+                    "x": 100,
+                    "y": 60
+                    }];
+              
+                var scaleX = d3.scaleLinear()
+                  .domain([d3.min(sampleData, function(d) { return d.x; }), 
+                           d3.max(sampleData, function(d) { return d.x; })])
+                  .range([10,300]);
+    
                 d3.select("#visual")
                     .selectAll("circle")
-                    .data([30,30,30])
+                    .data(sampleData)
                     .enter()
                     .append("circle")
-                    .attr("cx", function(d,i) {return d + (i*60);})
-                    .attr("r",function(){return 30;})
-                    .attr("cy",function(){return 50;});
+                    .attr("cx", function(d,i) {return scaleX(d.x) + (i+1)*20;})
+                    .attr("r",function(){return 10;})
+                    .attr("cy",function(d,i){return d.y + (i+1)*20;})
+                    .style("fill", "red");
             </script>
         </body>
     </head>
 </html>
-        
