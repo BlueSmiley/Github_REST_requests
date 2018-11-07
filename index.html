@@ -5,47 +5,102 @@
     </head>
         <body>
             <svg id="visual" width="100%" height="100%"></svg>
-            <script>
-                var sampleData = [{
-                    "add": 100,
-                    "del": 5
-                    }, {
-                    "add": 20,
-                    "del": 20
-                    }, {
-                    "add": 40,
-                    "del": 10
-                    }, {
-                    "add": 60,
-                    "del": 40
-                    }, {
-                    "add": 80,
-                    "del": 5
-                    }, {
-                    "add": 100,
-                    "del": 60
-                    }];
-              
-                var scaleSize = d3.scaleLinear()
-                  .domain([d3.min(sampleData, function(d) { return d.add; }), 
-                           d3.max(sampleData, function(d) { return d.add; })])
-                  .range([10,40]);
-              
-                var color = d3.scaleLinear()
-                  .domain([
-                    d3.min(sampleData, function(d) { return (d.add/d.del);}),
-                    d3.max(sampleData, function(d) { return (d.add/d.del);})])
-                  .range(["yellow","blue"]);
-    
-                d3.select("#visual")
-                    .selectAll("circle")
-                    .data(sampleData)
+            <script type="text/javascript">
+                dataset = {
+                    "children": [{"Name":"PBrad","Add":4319,"Del":1000},
+                        {"Name":"MBostock","Add":4159,"Del":1200},
+                        {"Name":"Adlk","Add":2583,"Del":1200},
+                        {"Name":"Matt","Add":2074,"Del":1500},
+                        {"Name":"Blue","Add":1894,"Del":1050},
+                        {"Name":"Walk","Add":1809,"Del":1050},
+                        {"Name":"Sbarr","Add":1713,"Del":1050},
+                        {"Name":"Alex","Add":1636,"Del":1050},
+                        {"Name":"Linus","Add":1566,"Del":1050},
+                        {"Name":"Marco","Add":1511,"Del":1050},
+                        {"Name":"Jozu","Add":1489,"Del":1050},
+                        {"Name":"Shanks","Add":1487,"Del":1050},
+                        {"Name":"Edward","Add":1423,"Del":1050},
+                        {"Name":"Thatch","Add":1372,"Del":1050},
+                        {"Name":"Mitchell","Add":1341,"Del":1050},
+                        {"Name":"Johnny","Add":1331,"Del":1050},
+                        {"Name":"Joseph","Add":1328,"Del":1050},
+                        {"Name":"Jonathon","Add":1306,"Del":1050},
+                        {"Name":"Giorno","Add":1293,"Del":1050},
+                        {"Name":"Rutherford","Add":1273,"Del":1050},
+                        {"Name":"Dmitri","Add":1268,"Del":1050}]
+                    };
+
+                var diameter = 600;     
+
+                var bubble = d3.pack(dataset)
+                    .size([diameter, diameter])
+                    .padding(1.5);
+
+                var svg = d3.select("#visual")
+                    .attr("class", "bubble");
+
+                var nodes = d3.hierarchy(dataset)
+                    .sum(function(d) { return d.Add; });
+
+                var node = svg.selectAll(".node")
+                    .data(bubble(nodes).descendants())
                     .enter()
-                    .append("circle")
-                    .attr("cx", function(d,i) {return (i+1)*50;})
-                    .attr("r",function(d){return scaleSize(d.add);})
-                    .attr("cy",function(d,i){return (i+1)*50;})
-                    .style("fill", function(d){return color(d.add/d.del);});
+                    .filter(function(d){
+                        return  !d.children
+                    })
+                    .append("g")
+                    .attr("class", "node")
+                    .attr("transform", function(d) {
+                        return "translate(" + d.x + "," + d.y + ")";
+                    });
+                    
+                var color = d3.scaleLinear()
+                    .domain([
+                        d3.min(dataset.children, function(d) { return (d.Add/d.Del);}),
+                        d3.max(dataset.children, function(d) { return (d.Add/d.Del);})])
+                    .range(["yellow","blue"]);
+                
+
+                node.append("title")
+                    .text(function(d) {
+                        return d.Name + ": " + d.Add;
+                    });
+
+                node.append("circle")
+                    .attr("r", function(d) {
+                        return d.r;
+                    })
+                    .style("fill", function(d,i) {
+                        return color(d.data.Add/d.data.Del);
+                    });
+
+                node.append("text")
+                    .attr("dy", ".2em")
+                    .style("text-anchor", "middle")
+                    .text(function(d) {
+                        return d.data.Name.substring(0, d.r / 3);
+                    })
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", function(d){
+                        return d.r/5;
+                    })
+                    .attr("fill", "white");
+
+                node.append("text")
+                    .attr("dy", "1.3em")
+                    .style("text-anchor", "middle")
+                    .text(function(d) {
+                        return d.data.Add;
+                    })
+                    .attr("font-family",  "Gill Sans", "Gill Sans MT")
+                    .attr("font-size", function(d){
+                        return d.r/5;
+                    })
+                    .attr("fill", "white");
+
+                d3.select(self.frameElement)
+                    .style("height", diameter + "px");
+
             </script>
         </body>
     </head>
