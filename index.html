@@ -45,7 +45,7 @@
                     .append("g")
                     .attr("class", "node")
                     .attr("transform", function(d) {
-                        return "translate(" + d.x + "," + d.y + ")";
+                        return "translate(" + d.x * 1.2 + "," + d.y + ")";
                     });
                     
                 var color = d3.scaleLinear()
@@ -104,10 +104,7 @@
                         return d.r/5;
                     })
                     .attr("fill", "red");
-                
-
-                d3.select(self.frameElement)
-                    .style("height", diameter + "px");
+            
             });
               
             </script>
