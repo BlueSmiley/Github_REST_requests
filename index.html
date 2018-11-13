@@ -45,7 +45,7 @@
                     .append("g")
                     .attr("class", "node")
                     .attr("transform", function(d) {
-                        return "translate(" + d.x * 1.2 + "," + d.y + ")";
+                        return "translate(" + d.x + "," + d.y + ")";
                     });
                     
                 var color = d3.scaleLinear()
@@ -85,7 +85,7 @@
                     .attr("dy", "1.3em")
                     .style("text-anchor", "middle")
                     .text(function(d) {
-                        return d.data.Add;
+                        return d.data.Add.substring(0, d.r / 3);;
                     })
                     .attr("font-family",  "Gill Sans", "Gill Sans MT")
                     .attr("font-size", function(d){
@@ -97,7 +97,7 @@
                     .attr("dy", "2.4em")
                     .style("text-anchor", "middle")
                     .text(function(d) {
-                        return d.data.Del;
+                        return d.data.Del.substring(0, d.r / 3);;
                     })
                     .attr("font-family",  "Gill Sans", "Gill Sans MT")
                     .attr("font-size", function(d){
