@@ -1,4 +1,6 @@
 import sys
+import cmd
+import getpass
 from github import Github
 from github import enable_console_debug_logging
 
@@ -8,24 +10,21 @@ def main():
         help()
         return
     else:
-        if(sys.argv[1]=="None"):
-            if(len(sys.argv)<3):
-                help()
-            else:
-                g = Github()
-                crawl(g,sys.argv[2])
+        if(sys.argv[1]=="None"): 
+            g = Github()
+            reponame = raw_input("Repository:")
+            crawl(g,reponame)
         elif(sys.argv[1]=="Login"):
-            if(len(sys.argv)<5):
-                help()
-            else:
-                g = Github(sys.argv[2],sys.argv[3])
-                crawl(g,sys.argv[4])
+            username = raw_input("Username:")
+            password = getpass.getpass("Password:")
+            g = Github(username,password)
+            reponame = raw_input("Repository:")
+            crawl(g,reponame)
         elif(sys.argv[1]=="Token"):
-            if(len(sys.argv)<4):
-                help()
-            else:
-                g = Github(sys.argv[2])
-                crawl(g,sys.argv[3])
+            token = getpass.getpass("Github Token:")
+            g = Github(token)
+            reponame = raw_input("Repository:")
+            crawl(g,reponame)
         else:
             print("Unknown parameters\n")
             help()
@@ -46,14 +45,12 @@ def crawl(g, reponame):
             "Deletions:" + str(total_deletions) + "\n")
     
 def help():
-    print("crawler.py option_name option_params.. github_repo_name \n")
+    print("crawler.py option_name \n")
     print("option_name = \n None: For using limited rate access.\n" + 
         "Login: For login using github username and password.\n" +
         "Token: For login using github access token.\n")
-    print("option_params = \n Don't enter anything if option=None\n" +
-        "github_username password if option=Login\n" +
-        "github_acess_token if option=Token\n")
-    print("github_repo_name = name of repo this script should crawl")
+    print("Then enter in the appropriate values for any fields that pop up\n")
+    print("Repository = name of repo this script should crawl")
     
 
 
