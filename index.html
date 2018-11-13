@@ -80,34 +80,6 @@
                         return d.r/5;
                     })
                     .attr("fill", "black");
-
-                node.append("text")
-                    .attr("dy", function(d){
-                        return (2.4 + 1*(d.r/5))
-                    })
-                    .style("text-anchor", "middle")
-                    .text(function(d) {
-                        return d.data.Add.toString().substring(0, d.r / 3);
-                    })
-                    .attr("font-family",  "Gill Sans", "Gill Sans MT")
-                    .attr("font-size", function(d){
-                        return d.r/5;
-                    })
-                    .attr("fill", "green");
-                
-                node.append("text")
-                    .attr("dy", function(d){
-                        return (2.4 + 2*(d.r/5))
-                    })
-                    .style("text-anchor", "middle")
-                    .text(function(d) {
-                        return d.data.Del.toString().substring(0, d.r / 3);
-                    })
-                    .attr("font-family",  "Gill Sans", "Gill Sans MT")
-                    .attr("font-size", function(d){
-                        return d.r/5;
-                    })
-                    .attr("fill", "red");
             
             });
               
