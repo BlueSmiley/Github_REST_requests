@@ -83,7 +83,7 @@
 
                 node.append("text")
                     .attr("dy", function(d){
-                        (.2 + d.r/5) + "em"
+                        (.2 + 10*(d.r/5)) + "em"
                     })
                     .style("text-anchor", "middle")
                     .text(function(d) {
@@ -97,7 +97,7 @@
                 
                 node.append("text")
                     .attr("dy", function(d){
-                        (.2 + 2*(d.r/5)) + "em"
+                        (.2 + 20*(d.r/5)) + "em"
                     })
                     .style("text-anchor", "middle")
                     .text(function(d) {
