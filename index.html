@@ -8,12 +8,23 @@
             <script type="text/javascript">
         
             d3.json("data.json", function(error, dataset) {
-                if (error) throw error;
+                if (error) 
+                    throw error;
                 
-                var diameter = d3.select("#visual")
+                var width = d3.select("#visual")
                                 .node()
                                 .getBoundingClientRect()
-                                .width;     
+                                .width;
+                
+                var height = d3.select("#visual")
+                                .node()
+                                .getBoundingClientRect()
+                                .height;
+                var diameter;
+                if(width>height)
+                    diameter = height;
+                else
+                    diameter = width;
 
                 var bubble = d3.pack(dataset)
                     .size([diameter, diameter])
