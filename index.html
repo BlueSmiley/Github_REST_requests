@@ -10,8 +10,10 @@
             d3.json("data.json", function(error, dataset) {
                 if (error) throw error;
                 
-                var canvas = document.querySelector("svg");
-                var diameter = canvas.width;     
+                var diameter = d3.select("#visual")
+                                .node()
+                                .getBoundingClientRect()
+                                .width;     
 
                 var bubble = d3.pack(dataset)
                     .size([diameter, diameter])
