@@ -56,9 +56,6 @@ def crawl(g, reponame):
         for week in c.weeks: 
             total_additions += week.a
             total_deletions += week.d
-        print("Contributor:" + str(c.author.login) + "\n"
-            "Additions:" + str(total_additions) + "\n" + 
-            "Deletions:" + str(total_deletions) + "\n")
         data["children"].append({
             "Name": c.author.login,
             "Add" : total_additions,
