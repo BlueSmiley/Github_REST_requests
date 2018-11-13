@@ -1,8 +1,10 @@
 import sys
 import cmd
 import getpass
+import json
 from github import Github
 from github import enable_console_debug_logging
+
 
 def main():
     if(len(sys.argv)<2):
@@ -12,18 +14,30 @@ def main():
     else:
         if(sys.argv[1]=="None"): 
             g = Github()
-            reponame = raw_input("Repository:")
+            if sys.version_info[0] < 3:
+                reponame = raw_input("Repository:")
+            else:
+                reponame = input("Repository:")
             crawl(g,reponame)
         elif(sys.argv[1]=="Login"):
-            username = raw_input("Username:")
+            if sys.version_info[0] < 3:
+                username = raw_input("Username:")
+            else:
+                username = input("Username:")
             password = getpass.getpass("Password:")
             g = Github(username,password)
-            reponame = raw_input("Repository:")
+            if sys.version_info[0] < 3:
+                reponame = raw_input("Repository:")
+            else:
+                reponame = input("Repository:")
             crawl(g,reponame)
         elif(sys.argv[1]=="Token"):
             token = getpass.getpass("Github Token:")
             g = Github(token)
-            reponame = raw_input("Repository:")
+            if sys.version_info[0] < 3:
+                reponame = raw_input("Repository:")
+            else:
+                reponame = input("Repository:")
             crawl(g,reponame)
         else:
             print("Unknown parameters\n")
@@ -34,6 +48,8 @@ def crawl(g, reponame):
     repo = g.get_repo(reponame)
     #contributors = repo.get_contributors()
     contributors = repo.get_stats_contributors()
+    data = {} 
+    data["children"] = []
     for c in contributors:
         total_additions = 0
         total_deletions = 0
@@ -43,6 +59,14 @@ def crawl(g, reponame):
         print("Contributor:" + str(c.author.login) + "\n"
             "Additions:" + str(total_additions) + "\n" + 
             "Deletions:" + str(total_deletions) + "\n")
+        data["children"].append({
+            "Name": c.author.login,
+            "Add" : total_additions,
+            "Del" : total_deletions
+        })
+    with open('data.json', 'w') as outfile:  
+        json.dump(data, outfile)
+        
     
 def help():
     print("crawler.py option_name \n")
