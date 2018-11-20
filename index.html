@@ -6,87 +6,96 @@
         <body>
             <svg id="visual" width="100%" height="100%"></svg>
             <script type="text/javascript">
-        
-            d3.json("kubernetes.json", function(error, dataset) {
-                if (error) 
-                    throw error;
-                
-                var width = d3.select("#visual")
-                                .node()
-                                .getBoundingClientRect()
-                                .width;
-                
-                var height = d3.select("#visual")
-                                .node()
-                                .getBoundingClientRect()
-                                .height;
-                var diameter;
-                if(width>height)
-                    diameter = height;
-                else
-                    diameter = width;
-
-                var bubble = d3.pack()
-                    .size([width, height])
-                    .padding(2);
-
-                var svg = d3.select("#visual")
-                    .attr("class", "bubble");
-
-                var nodes = d3.hierarchy(dataset)
-                    .sum(function(d) { return d.Add; })
-                    .sort(function(a, b) { return b.Add - a.Add; });
-
-                var node = svg.selectAll(".node")
-                    .data(bubble(nodes).descendants())
-                    .enter()
-                    .append("g")
-                    .attr("class", function(d) { 
-                        return d.children ? "root" : "node"; })
-                    .attr("stroke", "black")
-                    .attr( "stroke-width", "1")
-                    .attr("transform", function(d) {
-                        return "translate(" + d.x + "," + d.y + ")";
-                    });
+            function graph(filename)
+            {
+                d3.json(filename, function(error, dataset) {
+                    if (error) 
+                        throw error;
                     
-                var color = d3.scaleLinear()
-                    .domain([
-                        d3.min(dataset.children, function(d) { return (d.Del/d.Add);}),
-                        d3.max(dataset.children, function(d) { return (d.Del/d.Add);})])
-                    .range(["silver","gold"]);
-                
+                    var width = d3.select("#visual")
+                                    .node()
+                                    .getBoundingClientRect()
+                                    .width;
+                    
+                    var height = d3.select("#visual")
+                                    .node()
+                                    .getBoundingClientRect()
+                                    .height;
+                    var diameter;
+                    if(width>height)
+                        diameter = height;
+                    else
+                        diameter = width;
 
-                node.append("title")
-                    .text(function(d) {
-                        return "Name:" + d.data.Name + "\nLines added:" + d.data.Add + 
-                        "\nLines deleted:" + d.data.Del + "\n%churn:" + 
-                        ((d.data.Del/d.data.Add)*100).toFixed(2);
-                    });
+                    var bubble = d3.pack()
+                        .size([width, height])
+                        .padding(2);
 
-                node.append("circle")
-                    .attr("r", function(d) {
-                        return d.r;
-                    })
-                    .style("fill", function(d,i) {
-                        return color(d.data.Add/d.data.Del);
-                    });
+                    var svg = d3.select("#visual")
+                        .attr("class", "bubble");
+
+                    var nodes = d3.hierarchy(dataset)
+                        .sum(function(d) { return d.Add; })
+                        .sort(function(a, b) { return b.Add - a.Add; });
+
+                    var node = svg.selectAll(".node")
+                        .data(bubble(nodes).descendants())
+                        .enter()
+                        .append("g")
+                        .attr("class", function(d) { 
+                            return d.children ? "root" : "node"; })
+                        .attr("stroke", "black")
+                        .attr( "stroke-width", "1")
+                        
+                        .attr("transform", function(d) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
+                        
+                    var color = d3.scaleLinear()
+                        .domain([
+                            d3.min(dataset.children, function(d) { return (d.Del/d.Add);}),
+                            d3.max(dataset.children, function(d) { return (d.Del/d.Add);})])
+                        .range(["silver","gold"]);
+                    
+
+                    node.append("title")
+                        .text(function(d) {
+                            return "Name:" + d.data.Name + "\nLines added:" + d.data.Add + 
+                            "\nLines deleted:" + d.data.Del + "\n%churn:" + 
+                            ((d.data.Del/d.data.Add)*100).toFixed(2);
+                        });
+
+                    node.append("circle")
+                        .attr("r", function(d) {
+                            return d.r;
+                        })
+                        .style("fill", function(d,i) {
+                            return color(d.data.Add/d.data.Del);
+                        })
+                        .on("click", function(d) {
+                            if (!d.children) 
+                                ; 
+                            });
+                    
+                    node.append("text")
+                        .attr("dy", function(d){
+                            return !d.children?".2em":"-4em";
+                        })
+                        .attr( "stroke-width", "0")
+                        .style("text-anchor", "middle")
+                        .text(function(d) {
+                            return d.data.Name.substring(0, d.r / 3);
+                        })
+                        .attr("font-family", "sans-serif")
+                        .attr("font-size", function(d){
+                            return d.r/5;
+                        })
+                        .attr("fill", "black");
                 
-                node.append("text")
-                    .attr("dy", function(d){
-                        return !d.children?".2em":"-4em";
-                    })
-                    .attr( "stroke-width", "0")
-                    .style("text-anchor", "middle")
-                    .text(function(d) {
-                        return d.data.Name.substring(0, d.r / 3);
-                    })
-                    .attr("font-family", "sans-serif")
-                    .attr("font-size", function(d){
-                        return d.r/5;
-                    })
-                    .attr("fill", "black");
-            
-            });
+                });
+            }
+
+            graph("kubernetes.json");
               
             </script>
         </body>

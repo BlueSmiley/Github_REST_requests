@@ -18,7 +18,9 @@ def main():
                 reponame = raw_input("Repository:")
             else:
                 reponame = input("Repository:")
-            crawl(g,reponame)
+            repo = g.get_repo(reponame)
+            crawl_users(g, repo.get_contributors())
+            #crawl(g,reponame)
         elif(sys.argv[1]=="Login"):
             if sys.version_info[0] < 3:
                 username = raw_input("Username:")
@@ -30,7 +32,9 @@ def main():
                 reponame = raw_input("Repository:")
             else:
                 reponame = input("Repository:")
-            crawl(g,reponame)
+            repo = g.get_repo(reponame)
+            crawl_users(g, repo.get_contributors())
+            #crawl(g,reponame)
         elif(sys.argv[1]=="Token"):
             token = getpass.getpass("Github Token:")
             g = Github(token)
@@ -38,7 +42,9 @@ def main():
                 reponame = raw_input("Repository:")
             else:
                 reponame = input("Repository:")
-            crawl(g,reponame)
+            repo = g.get_repo(reponame)
+            crawl_users(g, repo.get_contributors())
+            #crawl(g,reponame)
         else:
             print("Unknown parameters\n")
             help()
@@ -50,10 +56,10 @@ def crawl(g, reponame):
     contributors = repo.get_stats_contributors()
     data = {}
     data.update({
-        "Name" : (reponame.split("/"))[0],
+        "Name" : (reponame.split("/"))[1],
         "Add" : 0,
         "Del" : 0,
-        "children" : {}
+        "children" : []
     }) 
     data["children"] = []
     repo_adds = 0
@@ -73,9 +79,63 @@ def crawl(g, reponame):
         })
         data["Add"] = repo_adds
         data["Del"] = repo_dels
-    with open((reponame.split("/"))[0] + '.json', 'w') as outfile:  
+    #This here probably kills ur rate limit :)
+    crawl_users(g, contributors)
+    with open((reponame.split("/"))[1] + '.json', 'w') as outfile:  
         json.dump(data, outfile)
         
+# This is probably a bit unsuitable due to the amount of data requests fired
+# Also midway through making this the documentation became sparse/non-existent
+# But relucatant to throw away good possibly working code
+# Also I have a feeling the pygithub abstraction leaks so a lot more requests
+# Than even I imagine probably happen
+def crawl_users(g, contributors):
+    #Or why you should use an ORM rather than work with raw data and json
+    for author in contributors:
+        data = {}
+        data.update({
+             "Name" : author.login,
+             "Add" : 0,
+             "Del" : 0,
+             "children" : []
+        })
+        rinfo = {}
+        tAdd = 0
+        tDel = 0
+        for event in author.get_events():
+            if event.type == "PushEvent":
+                repo = rinfo.get(event.repo.name,{
+                    "Add":0,
+                    "Del":0,
+                    })
+                #ignore deleted repos since github wont let you acess them
+                # Says file not found so maybe they dont even store them haha
+                try:
+                    commits = event.payload["commits"]
+                    actualrepo = g.get_repo(event.repo.full_name)
+                    for commit in commits:
+                        commitdata = actualrepo.get_commit(sha=commit["sha"])
+                        repo["Add"] += commitdata.stats.additions
+                        repo["Del"] += commitdata.stats.deletions
+                    rinfo[event.repo.name] = repo
+                except:
+                    pass
+        
+        for reponame in rinfo.keys():
+            usr_info = rinfo[reponame]
+            tAdd += usr_info["Add"]
+            tDel += usr_info["Del"]
+            #This format is for visualisation...maybe ORM would have helped here
+            data["children"].append({
+                "Name": reponame,
+                "Add" : usr_info["Add"],
+                "Del" : usr_info["Del"]
+             })
+        data["Add"] = tAdd
+        data["Del"] = tDel
+        with open(author.login + '.json', 'w') as outfile:  
+            json.dump(data, outfile)
+            
     
 def help():
     print("crawler.py option_name \n")
