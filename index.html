@@ -51,15 +51,16 @@
                     
                 var color = d3.scaleLinear()
                     .domain([
-                        d3.min(dataset.children, function(d) { return (d.Add/d.Del);}),
-                        d3.max(dataset.children, function(d) { return (d.Add/d.Del);})])
+                        d3.min(dataset.children, function(d) { return (d.Del/d.Add);}),
+                        d3.max(dataset.children, function(d) { return (d.Del/d.Add);})])
                     .range(["silver","gold"]);
                 
 
                 node.append("title")
                     .text(function(d) {
                         return "Name:" + d.data.Name + "\nLines added:" + d.data.Add + 
-                        "\nLines deleted:" + d.data.Del;
+                        "\nLines deleted:" + d.data.Del + "\n%churn:" + 
+                        ((d.data.Del/d.data.Add)*100).toFixed(2);
                     });
 
                 node.append("circle")
