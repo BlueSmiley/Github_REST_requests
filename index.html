@@ -7,7 +7,7 @@
             <svg id="visual" width="100%" height="100%"></svg>
             <script type="text/javascript">
         
-            d3.json("data.json", function(error, dataset) {
+            d3.json("kubernetes.json", function(error, dataset) {
                 if (error) 
                     throw error;
                 
@@ -26,24 +26,24 @@
                 else
                     diameter = width;
 
-                var bubble = d3.pack(dataset)
+                var bubble = d3.pack()
                     .size([width, height])
-                    .padding(1.5);
+                    .padding(2);
 
                 var svg = d3.select("#visual")
                     .attr("class", "bubble");
 
                 var nodes = d3.hierarchy(dataset)
-                    .sum(function(d) { return d.Add; });
+                    .sum(function(d) { return d.Add; })
+                    .sort(function(a, b) { return b.Add - a.Add; });
 
                 var node = svg.selectAll(".node")
                     .data(bubble(nodes).descendants())
                     .enter()
-                    .filter(function(d){
-                        return  !d.children
-                    })
                     .append("g")
                     .attr("class", "node")
+                    .attr("stroke", "black")
+                    .attr( "stroke-width", "1")
                     .attr("transform", function(d) {
                         return "translate(" + d.x + "," + d.y + ")";
                     });
@@ -71,6 +71,7 @@
 
                 node.append("text")
                     .attr("dy", ".2em")
+                    .attr( "stroke-width", "0")
                     .style("text-anchor", "middle")
                     .text(function(d) {
                         return d.data.Name.substring(0, d.r / 3);

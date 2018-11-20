@@ -48,20 +48,32 @@ def crawl(g, reponame):
     repo = g.get_repo(reponame)
     #contributors = repo.get_contributors()
     contributors = repo.get_stats_contributors()
-    data = {} 
+    data = {}
+    data.update({
+        "Name" : (reponame.split("/"))[0],
+        "Add" : 0,
+        "Del" : 0,
+        "children" : {}
+    }) 
     data["children"] = []
+    repo_adds = 0
+    repo_dels = 0
     for c in contributors:
         total_additions = 0
         total_deletions = 0
         for week in c.weeks: 
             total_additions += week.a
             total_deletions += week.d
+        repo_adds += total_additions
+        repo_dels += total_deletions
         data["children"].append({
             "Name": c.author.login,
             "Add" : total_additions,
             "Del" : total_deletions
         })
-    with open('data.json', 'w') as outfile:  
+        data["Add"] = repo_adds
+        data["Del"] = repo_dels
+    with open((reponame.split("/"))[0] + '.json', 'w') as outfile:  
         json.dump(data, outfile)
         
     
