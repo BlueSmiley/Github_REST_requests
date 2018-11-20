@@ -41,7 +41,8 @@
                     .data(bubble(nodes).descendants())
                     .enter()
                     .append("g")
-                    .attr("class", "node")
+                    .attr("class", function(d) { 
+                        return d.children ? "root" : "node"; })
                     .attr("stroke", "black")
                     .attr( "stroke-width", "1")
                     .attr("transform", function(d) {
@@ -68,9 +69,11 @@
                     .style("fill", function(d,i) {
                         return color(d.data.Add/d.data.Del);
                     });
-
+                
                 node.append("text")
-                    .attr("dy", ".2em")
+                    .attr("dy", function(d){
+                        return !d.children?".2em":"-4em";
+                    })
                     .attr( "stroke-width", "0")
                     .style("text-anchor", "middle")
                     .text(function(d) {
