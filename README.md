@@ -1,7 +1,7 @@
 # Github_REST_requests
 Repository demonstrating using the github v3 REST API to pull data
 
-Visualtisations over at: [BlueSmiley/Github.io/Github_REST_requests](BlueSmiley/Github.io/Github_REST_requests)
+Visualtisations over at: [BlueSmiley.Github.io/Github_REST_requests](https://bluesmiley.github.io/Github_REST_requests/)
 
 Bubbles can be clicked to get in depth info on the user. 
 Reload to go back to start because I haven't bothered making a back button
