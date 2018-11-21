@@ -6,9 +6,10 @@
         <body>
             <svg id="visual" width="100%" height="100%"></svg>
             <script type="text/javascript">
+
             function graph(filename)
             {
-                d3.json(filename, function(error, dataset) {
+                d3.json(filename + ".json", function(error, dataset) {
                     if (error) 
                         throw error;
                     
@@ -74,7 +75,7 @@
                         })
                         .on("click", function(d) {
                             if (!d.children) 
-                                ; 
+                                graph(d.Name); 
                             });
                     
                     node.append("text")
@@ -95,7 +96,7 @@
                 });
             }
 
-            graph("kubernetes.json");
+            graph("kubernetes");
               
             </script>
         </body>
