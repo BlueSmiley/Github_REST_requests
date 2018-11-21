@@ -12,6 +12,8 @@
                 d3.json(filename + ".json", function(error, dataset) {
                     if (error) 
                         throw error;
+                    d3.selectAll(".node").remove();
+                    d3.selectAll(".root").remove();
                     
                     var width = d3.select("#visual")
                                     .node()
@@ -56,7 +58,7 @@
                         .domain([
                             d3.min(dataset.children, function(d) { return (d.Del/d.Add);}),
                             d3.max(dataset.children, function(d) { return (d.Del/d.Add);})])
-                        .range(["silver","gold"]);
+                        .range(["CadetBlue","DarkSeaGreen"]);
                     
 
                     node.append("title")
@@ -75,7 +77,7 @@
                         })
                         .on("click", function(d) {
                             if (!d.children) 
-                                graph(d.Name); 
+                                graph(d.data.Name); 
                             });
                     
                     node.append("text")
