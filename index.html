@@ -49,7 +49,14 @@
                             return d.children ? "root" : "node"; })
                         .attr("stroke", "black")
                         .attr( "stroke-width", "1")
-                        
+                        .on("mouseover",function(d){
+                            if(!d.children)
+                                d3.select(this).attr("stroke-width", "2");
+                        })
+                        .on("mouseleave",function(d){
+                            if(!d.children)
+                                d3.select(this).attr("stroke-width", "1");
+                        })
                         .attr("transform", function(d) {
                             return "translate(" + d.x + "," + d.y + ")";
                         });
