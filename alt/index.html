@@ -107,10 +107,16 @@
                         
                     var color = d3.scaleLinear()
                         .domain([
-                            d3.min(dataset.children, function(d) { return (d.Del/d.Add);}),
-                            d3.max(dataset.children, function(d) { return (d.Del/d.Add);})])
+                            d3.min(dataset.children, function(d) { 
+                                return Math.max((d.Del/d.Add)*100,0);
+                                }),
+                            d3.max(dataset.children, function(d) { 
+                                return Math.min((d.Del/d.Add)*100,100);
+                                })])
                         .range(["CadetBlue","DarkSeaGreen"]);
                     
+                    color.clamp(true);
+
 
                     node.append("title")
                         .text(function(d) {
@@ -124,7 +130,9 @@
                             return d.r;
                         })
                         .style("fill", function(d,i) {
-                            return color(d.data.Add/d.data.Del);
+                            return color(
+                                    (d.data.Add/d.data.Del)*100
+                                );
                         })
                         .on("click", function(d, i) {
                             if (d.children && i != 0) 
