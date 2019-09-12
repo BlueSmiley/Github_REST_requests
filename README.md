@@ -1,3 +1,4 @@
+Visualtisations over at: [BlueSmiley.Github.io/Github_REST_requests](https://bluesmiley.github.io/Github_REST_requests/)
 # SUPER IMPORTANT DISCLAIMER
 More detailed scraping and visualisation available in the alt directory.    
 However I think it looks uglier despite being technically more impressive in terms of amount of data being pulled and displayed.      
